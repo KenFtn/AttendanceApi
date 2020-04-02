@@ -1,0 +1,170 @@
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ApiResource()
+ * @ORM\Entity(repositoryClass="App\Repository\PromotionRepository")
+ */
+class Promotion
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $localisation;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $start;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $end;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="promotions")
+     */
+    private $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ExceptionDate", mappedBy="promotion", orphanRemoval=true)
+     */
+    private $exceptions;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+        $this->exceptions = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLocalisation(): ?string
+    {
+        return $this->localisation;
+    }
+
+    public function setLocalisation(string $localisation): self
+    {
+        $this->localisation = $localisation;
+
+        return $this;
+    }
+
+    public function getStart(): ?\DateTimeInterface
+    {
+        return $this->start;
+    }
+
+    public function setStart(\DateTimeInterface $start): self
+    {
+        $this->start = $start;
+
+        return $this;
+    }
+
+    public function getEnd(): ?\DateTimeInterface
+    {
+        return $this->end;
+    }
+
+    public function setEnd(\DateTimeInterface $end): self
+    {
+        $this->end = $end;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addPromotion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removePromotion($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ExceptionDate[]
+     */
+    public function getExceptions(): Collection
+    {
+        return $this->exceptions;
+    }
+
+    public function addException(ExceptionDate $exception): self
+    {
+        if (!$this->exceptions->contains($exception)) {
+            $this->exceptions[] = $exception;
+            $exception->setPromotion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeException(ExceptionDate $exception): self
+    {
+        if ($this->exceptions->contains($exception)) {
+            $this->exceptions->removeElement($exception);
+            // set the owning side to null (unless already changed)
+            if ($exception->getPromotion() === $this) {
+                $exception->setPromotion(null);
+            }
+        }
+
+        return $this;
+    }
+}
