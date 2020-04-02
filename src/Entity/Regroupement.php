@@ -30,9 +30,15 @@ class Regroupement
      */
     private $users;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Promotion", mappedBy="regroupements")
+     */
+    private $promotions;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->promotions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +81,34 @@ class Regroupement
         if ($this->users->contains($user)) {
             $this->users->removeElement($user);
             $user->removeRegroupement($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Promotion[]
+     */
+    public function getPromotions(): Collection
+    {
+        return $this->promotions;
+    }
+
+    public function addPromotion(Promotion $promotion): self
+    {
+        if (!$this->promotions->contains($promotion)) {
+            $this->promotions[] = $promotion;
+            $promotion->addRegroupement($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromotion(Promotion $promotion): self
+    {
+        if ($this->promotions->contains($promotion)) {
+            $this->promotions->removeElement($promotion);
+            $promotion->removeRegroupement($this);
         }
 
         return $this;

@@ -50,10 +50,16 @@ class Promotion
      */
     private $exceptions;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Regroupement", inversedBy="promotions")
+     */
+    private $regroupements;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->exceptions = new ArrayCollection();
+        $this->regroupements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +169,32 @@ class Promotion
             if ($exception->getPromotion() === $this) {
                 $exception->setPromotion(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Regroupement[]
+     */
+    public function getRegroupements(): Collection
+    {
+        return $this->regroupements;
+    }
+
+    public function addRegroupement(Regroupement $regroupement): self
+    {
+        if (!$this->regroupements->contains($regroupement)) {
+            $this->regroupements[] = $regroupement;
+        }
+
+        return $this;
+    }
+
+    public function removeRegroupement(Regroupement $regroupement): self
+    {
+        if ($this->regroupements->contains($regroupement)) {
+            $this->regroupements->removeElement($regroupement);
         }
 
         return $this;
