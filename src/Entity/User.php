@@ -4,19 +4,29 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\PersistentCollection;
-
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Ramsey\Uuid\UuidInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource()
+ * 
+ * 
  */
 class User implements UserInterface
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * var UuidInterface|null
+     * 
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
@@ -47,6 +57,7 @@ class User implements UserInterface
     private $lastname;
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Promotion", inversedBy="users")
+     * @ApiSubResource(maxDepth=1)
      */
     private $promotions;
 
@@ -57,10 +68,11 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Presence", mappedBy="user", orphanRemoval=true)
+     * @ApiSubResource(maxDepth=1)
      */
     private $presences;
 
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }

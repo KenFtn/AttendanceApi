@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ApiResource()
@@ -14,9 +18,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Promotion
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * var UuidInterface|null
+     * 
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
@@ -42,11 +49,13 @@ class Promotion
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="promotions")
+     * @ApiSubResource(maxDepth=1)
      */
     private $users;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ExceptionDate", mappedBy="promotion", orphanRemoval=true)
+     * 
      */
     private $exceptions;
 

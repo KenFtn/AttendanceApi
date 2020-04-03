@@ -1,4 +1,6 @@
 api_platform:
+    version: 0.0.1
+    description: WebAPI AttentenceAPI for simplon's student
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
