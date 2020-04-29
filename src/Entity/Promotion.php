@@ -10,9 +10,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+use App\Controller\Api\PromotionPresenceController;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ * collectionOperations={
+ *          "get", 
+ *          "post",
+ *          "presences"={
+ *              "method"="GET",
+ *              "path"="/promotion/{id}/presences",
+ *              "normalization_context"={"groups"={"export"}},
+ *          }
+ *     },
+ *     itemOperations={"get", "put", "patch", "delete"})
+ * 
+ * @ApiFilter(DateFilter::class, properties={"users.presences.date"})
  * @ORM\Entity(repositoryClass="App\Repository\PromotionRepository")
  */
 class Promotion
@@ -24,11 +39,13 @@ class Promotion
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     * @ApiProperty(identifier=true)
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"export"})
      */
     private $name;
 
@@ -49,7 +66,8 @@ class Promotion
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="promotions")
-     * @ApiSubResource(maxDepth=1)
+     * @ApiSubResource(maxDepth=5)
+     * @Groups({"export"})
      */
     private $users;
 
@@ -71,7 +89,7 @@ class Promotion
         $this->regroupements = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }

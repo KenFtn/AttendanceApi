@@ -11,12 +11,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Ramsey\Uuid\UuidInterface;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource()
- * 
- * 
  */
 class User implements UserInterface
 {
@@ -27,6 +26,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     * @ApiProperty(identifier=true)
      */
     private $id;
 
@@ -48,11 +48,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"export"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"export"})
      */
     private $lastname;
     /**
@@ -68,9 +70,13 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Presence", mappedBy="user", orphanRemoval=true)
-     * @ApiSubResource(maxDepth=1)
+     * @Groups({"export"})
      */
     private $presences;
+
+    public function __toString(){
+        return $this->firstname.' '.$this->lastname;
+    }
 
     public function getId(): ?UuidInterface
     {
@@ -177,7 +183,7 @@ class User implements UserInterface
     /**
      * @return Collection|Promotion[]
      */
-    public function getPromotions(): Collection
+    public function getPromotions(): PersistentCollection
     {
         return $this->promotions;
     }
@@ -203,7 +209,7 @@ class User implements UserInterface
     /**
      * @return Collection|Regroupement[]
      */
-    public function getRegroupements(): Collection
+    public function getRegroupements(): PersistentCollection
     {
         return $this->regroupements;
     }
@@ -229,7 +235,7 @@ class User implements UserInterface
     /**
      * @return Collection|Presence[]
      */
-    public function getPresences(): Collection
+    public function getPresences(): PersistentCollection
     {
         return $this->presences;
     }
