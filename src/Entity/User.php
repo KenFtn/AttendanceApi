@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -164,7 +165,7 @@ class User implements UserInterface
     /**
      * @return Collection|Promotion[]
      */
-    public function getPromotions(): Collection
+    public function getPromotions(): PersistentCollection 
     {
         return $this->promotions;
     }
@@ -190,7 +191,7 @@ class User implements UserInterface
     /**
      * @return Collection|Regroupement[]
      */
-    public function getRegroupements(): Collection
+    public function getRegroupements(): PersistentCollection 
     {
         return $this->regroupements;
     }
@@ -216,7 +217,7 @@ class User implements UserInterface
     /**
      * @return Collection|Presence[]
      */
-    public function getPresences(): Collection
+    public function getPresences(): PersistentCollection 
     {
         return $this->presences;
     }
