@@ -33,7 +33,6 @@ class CreateUserCommand extends Command
     {
         $admin = new User();
         $admin->setEmail('admin@admin.com');
-        $admin->setUsername('admin');
         $admin->setFirstname('admin');
         $admin->setLastname('admin');
         $admin->setPassword($this->userPasswordEncoder->encodePassword($admin, 'admin'));
