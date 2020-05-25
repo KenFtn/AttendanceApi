@@ -19,6 +19,7 @@ class CreateUserCommand extends Command
 
     public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $userPasswordEncoder)
     {
+        parent::__construct(null);
         $this->entityManager = $entityManager;
         $this->userPasswordEncoder = $userPasswordEncoder;
     }
