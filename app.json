@@ -3,7 +3,7 @@
   "env": {
     "APP_ENV": "prod",
     "APP_SECRET": {"generator": "secret"},
-    "CORS_ALLOW_ORIGIN": "https://simplonapi.herokuapp.com/",
+    "CORS_ALLOW_ORIGIN": "^https?://.*?$",
 	  "DATABASE_URL": "mysql://kxa3fyap8zt8s5bm:l3fwc15xm9sre9au@un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/dtctp6dtdb66f726"
   },
   "buildpacks": [
