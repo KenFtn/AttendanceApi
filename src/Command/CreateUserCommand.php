@@ -35,6 +35,7 @@ class CreateUserCommand extends Command
         $admin->setEmail('admin@admin.com');
         $admin->setFirstname('admin');
         $admin->setLastname('admin');
+        $admin->setRole(['ROLE_ADMIN']);
         $admin->setPassword($this->userPasswordEncoder->encodePassword($admin, 'admin'));
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
